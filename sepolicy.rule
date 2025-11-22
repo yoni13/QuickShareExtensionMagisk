@@ -1,0 +1,50 @@
+type mosey_server domain
+typeattribute mosey_server service_manager_type
+type mosey_service system_server_service
+typeattribute mosey_service service_manager_type
+typeattribute mosey_service hal_service_type
+type mosey_app domain
+type mosey_server_exec file_type
+typeattribute mosey_server_exec vendor_file_type
+typeattribute mosey_server_exec exec_type
+
+allow mosey_app mosey_server binder {call transfer}
+allow mosey_server mosey_app binder transfer
+allow mosey_app mosey_server fd use
+allow mosey_app mosey_service service_manager find
+allow mosey_server servicemanager binder  {call transfer}
+allow servicemanager mosey_server binder  {call transfer}
+allow init mosey_server_exec file {read getattr map execute open}
+allow init mosey_server process transition
+allow mosey_server mosey_server_exec file {read getattr map execute open entrypoint}
+allow init mosey_server process {siginh rlimitinh}
+
+type_transition init mosey_server_exec process mosey_server
+
+allow mosey_server mosey_service service_manager {add find}
+allow mosey_server self capability {net_admin net_raw}
+allow mosey_server sysfs_net dir {ioctl read getattr lock open watch watch_reads search}
+allow mosey_server sysfs_net file {ioctl read getattr lock map open watch watch_reads}
+allow mosey_server sysfs_net lnk_file {ioctl read getattr lock map open watch watch_reads}
+allow mosey_server self udp_socket {ioctl create}
+allowxperm mosey_server self ioctl udp_socket range {0x8913 0x8914 0x8922 0x8924 0x8946 0x8994 0x89f1}
+allow mosey_server self unix_dgram_socket ioctl
+allowxperm mosey_server self ioctl unix_dgram_socket range {0x8913 0x8914 0x8946 0x8994}
+allow mosey_server self packet_socket {ioctl read write create getattr setattr lock append map bind connect listen accept getopt setopt shutdown}
+allowxperm mosey_server self ioctl packet_socket {0x8913 0x8927 0x8933}
+allow mosey_server self netlink_route_socket {read write create nlmsg_read nlmsg_write nlmsg_readpriv nlmsg_getneigh}
+allow mosey_server mosey_server netlink_netfilter_socket create
+allow mosey_server tun_device chr_file {ioctl read write getattr lock append map open watch watch_reads}
+allowxperm mosey_server tun_device ioctl chr_file {0x54ca 0x54d2}
+allow mosey_server self tun_socket create
+
+permissive mosey_server
+allow mosey_server self unix_dgram_socket { write create connect}
+allow mosey_server self dir search
+allow mosey_server self lnk_file read
+
+type_transition magisk mosey_server_exec process mosey_server
+allow priv_app mosey_server binder {call transfer}
+allow mosey_server priv_app binder transfer
+allow priv_app mosey_server fd use
+
