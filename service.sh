@@ -1,4 +1,4 @@
 MODDIR=${0%/*}
 
-$MODDIR/system/vendor/bin/mosey_server
+LD_LIBRARY_PATH=/system/lib64:/vendor/lib64 $MODDIR/system/vendor/bin/mosey_server
 
