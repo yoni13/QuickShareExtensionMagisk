@@ -39,12 +39,15 @@ allowxperm mosey_server tun_device ioctl chr_file {0x54ca 0x54d2}
 allow mosey_server self tun_socket create
 
 permissive mosey_server
-allow mosey_server self unix_dgram_socket { write create connect}
-allow mosey_server self dir search
-allow mosey_server self lnk_file read
+allow mosey_server mosey_server unix_dgram_socket { write create connect}
+allow mosey_server mosey_server dir search
+allow mosey_server mosey_server lnk_file read
 
 type_transition magisk mosey_server_exec process mosey_server
+
+permissive priv_app
 allow priv_app mosey_server binder {call transfer}
 allow mosey_server priv_app binder transfer
 allow priv_app mosey_server fd use
+allow priv_app mosey_service service_manager find
 
