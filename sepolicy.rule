@@ -51,3 +51,5 @@ allow mosey_server priv_app binder transfer
 allow priv_app mosey_server fd use
 allow priv_app mosey_service service_manager find
 
+# Allow MoseyApp (priv_app) to find services labeled as default/unknown
+allow priv_app default_android_service service_manager find
